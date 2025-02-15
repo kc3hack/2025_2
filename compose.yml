@@ -1,0 +1,19 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: dockerfile
+    user: node
+    ports:
+      - 3000:3000
+    volumes:
+      - ./:/workspace/
+      - node_modules:/workspace/my-app/node_modules
+    environment:
+      - LOCAL_WORKSPACE_FOLDER="${localWorkspaceFolder}"
+      - WATCHPACK_POLLING=true
+    # 以下必要に応じて変更
+    tty: true
+    init: true
+volumes:
+  node_modules:
