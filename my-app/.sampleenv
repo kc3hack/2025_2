@@ -1,7 +1,0 @@
-SPOTIFY_CLIENT_ID=
-SPOTIFY_CLIENT_SECRET=
-SPOTIFY_REDIRECT_URI=https://localhost:3000/api/auth/callback/spotify
-
-NEXTAUTH_URL=https://localhost:3000
-NEXTAUTH_SECRET=
-
