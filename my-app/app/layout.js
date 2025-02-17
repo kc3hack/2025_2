@@ -23,6 +23,10 @@ export default function RootLayout({ children }) {
       <body>
         <AuthProvider>
           {children}
+          <footer className="fixed bottom-0 left-0 w-full bg-blue-900 text-white text-center py-4">
+            © 2025 My Website<br />
+            aa
+          </footer>
         </AuthProvider>
       </body>
     </html>
