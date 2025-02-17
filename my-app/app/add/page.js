@@ -36,7 +36,12 @@ export default function Home() {
         },
         body: JSON.stringify({ token, query }),
       });
-      setTracks(response.data.tracks.items);
+      if (!response.ok) {
+        throw new Error("Failed to fetch tracks");
+      }
+      const data = await response.json();
+      setTracks(data.tracks);
+      // setTracks(response.data.tracks.items);
     } catch (error) {
       console.error("Error fetching tracks:", error);
     }
