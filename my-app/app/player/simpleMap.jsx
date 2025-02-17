@@ -50,15 +50,18 @@ export default function CurrentLocationMap() {
 
   useEffect(() => {
     if ("geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          const { latitude, longitude } = pos.coords;
-          setPosition([latitude, longitude]); // 現在地が取得できたら位置を更新
-        },
-        (error) => {
-          console.error("位置情報を取得できませんでした:", error);
-        }
-      );
+      setInterval(() => {
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            const { latitude, longitude } = pos.coords;
+            console.log("位置情報を取得しました:", latitude, longitude);
+            setPosition([latitude, longitude]); // 現在地が取得できたら位置を更新
+          },
+          (error) => {
+            console.error("位置情報を取得できませんでした:", error);
+          }
+        );
+      }, 1000);
     } else {
       console.error("このブラウザはGeolocationに対応していません");
     }
