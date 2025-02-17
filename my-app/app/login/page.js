@@ -19,3 +19,23 @@ export default function Home() {
         )
     }
 }
+
+// "use client";
+// import { signIn, signOut, useSession } from "next-auth/react";
+
+// export default function LoginPage() {
+//   const { data: session } = useSession();
+
+//   return (
+//     <div>
+//       {session ? (
+//         <>
+//           <p>こんにちは, {session.user.name} さん</p>
+//           <button onClick={() => signOut()}>ログアウト</button>
+//         </>
+//       ) : (
+//         <button onClick={() => signIn("spotify")}>Spotifyでログイン</button>
+//       )}
+//     </div>
+//   );
+// }
