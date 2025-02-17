@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 
-async function getTrack(query, token) {
+async function getTrackTest(query, token) {
     const res = await fetch(`https://api.spotify.com/v1/search?q=${query}&type=track`,
         {
             method: "GET",
@@ -15,6 +15,10 @@ async function getTrack(query, token) {
     return resp.tracks.items[0].uri;
 }
 
+async function getTrack() {
+    return "spotify:track:1KLg01cjnRsENoFhJWUTSd";
+}
+
 async function getDevice(token) {
     const res = await fetch("https://api.spotify.com/v1/me/player/devices", {
         method: "GET",
@@ -26,9 +30,6 @@ async function getDevice(token) {
         throw new Error("Failed to get devices");
     }
     const devices = await res.json();
-    if (devices.devices.length === 0) {//デバイスが見つからない場合
-        throw new Error("No devices found");
-    }
     return devices.devices[0].id;
 }
 async function play(token, device_id, uri) {
@@ -43,35 +44,39 @@ async function play(token, device_id, uri) {
         }),
     });
     if (!res.ok) {
-        const resp = await res.json();
-        console.log(resp);
         throw new Error("Failed to play");
     }
     return res.json();
 }
 
-export async function POST(req) {
-    const { token } = await req.json();
-    console.log(token);
-
-    try {
-        const track = await getTrack("country", token);
-        // const track = "spotify:track:1KLg01cjnRsENoFhJWUTSd";
-        const device_id = await getDevice(token);
-        console.log(device_id);
-        const play_res = await play(token, device_id, track);
-        console.log(play_res);
-        return NextResponse.json({ message: "OK" });
-    } catch (e) {
-        console.log("ERROR!!!!!!!!!");
-        console.log(e.message);
-        switch (e.message) {
-            case "Failed to get devices":
-                return NextResponse.json({ message: "Failed to get devices" });
-            case "No devices found":
-                return NextResponse.json({ message: "No devices found" });
+async function pause(token, device_id) {
+    const res = await fetch(`https://api.spotify.com/v1/me/player/pause?device_id=${device_id}`, {
+        method: "PUT",
+        headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
         }
-        // console.error(e);
-        return NextResponse.json({ message: "ERROR" });
+    });
+    if (!res.ok) {
+        throw new Error("Failed to pause");
     }
+    return res.json();
+}
+
+export async function POST(req) {
+    const { token, status } = await req.json();
+    console.log(status);
+
+    const device_id = await getDevice(token);
+
+    switch (status) {
+        case "play":
+            const track = await getTrack();
+            const play_res = await play(token, device_id, track);
+            break;
+        case "pause":
+            const pause_res = await pause(token, device_id);
+            break;
+    }
+    return NextResponse.json({ message: "OK" });
 }

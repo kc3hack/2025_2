@@ -1,13 +1,12 @@
 "use client"
 import { useSession } from "next-auth/react"
-import { useRouter } from 'next/router'
 
 export default function Home() {
     const { data: session } = useSession();
     console.log(session);
     const token = session?.token?.access_token;
 
-    async function play() {
+    async function play(status) {
         try {
             await fetch(`/api/play`, {
                 method: 'POST',
@@ -15,7 +14,7 @@ export default function Home() {
                     Authorization: `Bearer ${token}`,
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ token }),
+                body: JSON.stringify({ token, status }),
             });
         } catch (e) {
             console.error(e);
@@ -25,9 +24,8 @@ export default function Home() {
     return (
         <>
             <p>再生するページ</p>
-            <button onClick={() => {
-                play();
-            }}>再生</button>
+            <button onClick={() => { play("play"); }}>再生</button>
+            <button onClick={() => { play("pause") }}>停止</button>
         </>
     )
 }
