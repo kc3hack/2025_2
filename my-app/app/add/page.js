@@ -15,15 +15,27 @@ import axios from "axios";
 //     )
 // }
 
+
 export default function Home() {
   const [query, setQuery] = useState("");
   const [tracks, setTracks] = useState([]);
+
+  const { data: session } = useSession();
+  const token = session?.token?.access_token;
 
   const searchTracks = async () => {
     if (!query) return;
 
     try {
-      const response = await axios.get(`/api/search?query=${query}`);
+      // const response = await axios.get(`/api/search?query=${query}`);
+      const response = await fetch(`/api/search`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ token, query }),
+      });
       setTracks(response.data.tracks.items);
     } catch (error) {
       console.error("Error fetching tracks:", error);
