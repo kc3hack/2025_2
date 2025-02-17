@@ -7,7 +7,7 @@ const defaultPosition = [34.81763, 135.36189]; //
 
 function DynamicMarker({ position }) {
   const map = useMap();
-  
+
   const [iconSize, setIconSize] = useState([25, 35]); // 初期アイコンサイズ
 
   useEffect(() => {
@@ -21,7 +21,7 @@ function DynamicMarker({ position }) {
         setIconSize([zoom * 1.5, zoom * 2]);  // ズームに基づいてアイコンサイズを調整
       }
     };
-    
+
 
     map.on('zoomend', updateIconSize);  // ズーム終了時にサイズを更新
     updateIconSize();  // 初期化時にサイズを設定
@@ -39,7 +39,7 @@ function DynamicMarker({ position }) {
   });
 
   return (
-    <Marker position={defaultPosition} icon={musicIcon} minZoom={10} maxZoom={15}>
+    <Marker position={position} icon={musicIcon} minZoom={10} maxZoom={15}>
       <Popup>曲名</Popup>
     </Marker>
   );
@@ -78,7 +78,7 @@ export default function CurrentLocationMap() {
   return (
     <MapContainer center={position} zoom={13} style={{ height: '80vh', width: '100%' }}>
       <TileLayer url="https://cartodb-basemaps-a.global.ssl.fastly.net/light_all/{z}/{x}/{y}{r}.png" />
-      
+
       <Marker position={position} icon={myIcon}>
         <Popup>現在地</Popup>
       </Marker>
