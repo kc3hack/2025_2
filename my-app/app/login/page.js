@@ -1,11 +1,34 @@
 "use client"
 import { useSession } from "next-auth/react"
 import { signIn, signOut } from "next-auth/react"
+import { useEffect } from "react";
 
 export default function Home() {
     const { data: session } = useSession();
     console.log(session);
     const token = session?.token?.access_token;
+
+    useEffect(() => {
+        if (session) {
+            const saveUser = async () => {
+                const response = await fetch('/api/users/route',{
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        name: session.user.name,
+                        email: session.user.email,
+                    }),
+                });
+                if(!response.ok) {
+                    console.log('Failed to save user');
+                }
+            };
+            saveUser();
+        }
+    },[session]);
+
     if (session) {
         return (
             <div className='p-6'>
