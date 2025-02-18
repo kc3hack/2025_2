@@ -1,0 +1,52 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model UserTable {
+  EmailAdd   String   @id @unique @db.VarChar(30)
+  UserName   String   @db.VarChar(30)
+  
+  // CollectionTableとのリレーション
+  collections CollectionTable[]
+}
+
+model CollectionTable {
+  CollectionID Int       @id @default(autoincrement())
+  EmailAdd     String    @db.VarChar(30)
+  MusicID      String    @db.VarChar(40)
+  Unlocked     DateTime
+  
+  // 外部キー
+  user   UserTable  @relation(fields: [EmailAdd], references: [EmailAdd], onDelete: Cascade)
+  music  MusicTable @relation(fields: [MusicID], references: [MusicID], onDelete: Cascade)
+}
+
+model MusicTable {
+  MusicID    String   @id @db.VarChar(40)
+  MusicName  String   @db.VarChar(30)
+  ArtistName String   @db.VarChar(30)
+  ImageUrl   String?  // NULL許可のため `?` をつける
+  
+  // CollectionTableとのリレーション
+  collections CollectionTable[]
+  // EntryTableとのリレーション
+  entries EntryTable[]
+}
+
+model EntryTable {
+  EntryID   Int      @id @default(autoincrement())
+  MusicID   String   @db.VarChar(40)
+  Latitude  Float
+  Longitude Float
+  BlockNo   Int
+
+  // 外部キー
+  music MusicTable @relation(fields: [MusicID], references: [MusicID], onDelete: Cascade)
+
+  @@index([BlockNo], name: "BlockNo_index") // INDEX の追加
+}
