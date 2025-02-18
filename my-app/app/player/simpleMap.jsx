@@ -44,6 +44,17 @@ function DynamicMarker({ position }) {
     </Marker>
   );
 }
+function RecenterMap({ position }) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (position) {
+      map.setView(position, map.getZoom()); // 位置が変わったらマップの中心を移動
+    }
+  }, [position, map]);
+
+  return null; // UI を持たないコンポーネント
+}
 
 export default function CurrentLocationMap() {
   const [position, setPosition] = useState(null); // 初期位置はnullに変更
@@ -81,7 +92,7 @@ export default function CurrentLocationMap() {
   return (
     <MapContainer center={position} zoom={13} style={{ height: '80vh', width: '100%' }}>
       <TileLayer url="https://cartodb-basemaps-a.global.ssl.fastly.net/light_all/{z}/{x}/{y}{r}.png" />
-
+      <RecenterMap position={position} />
       <Marker position={position} icon={myIcon}>
         <Popup>現在地</Popup>
       </Marker>
