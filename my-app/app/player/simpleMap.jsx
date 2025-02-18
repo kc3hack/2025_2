@@ -44,20 +44,21 @@ function DynamicMarker({ position }) {
     </Marker>
   );
 }
-function RecenterMap({ position }) {
+function RecenterMap({ position, isFollowing }) {
   const map = useMap();
 
   useEffect(() => {
-    if (position) {
-      map.setView(position, map.getZoom()); // 位置が変わったらマップの中心を移動
+    if (position && isFollowing) {
+      map.setView(position, map.getZoom());
     }
-  }, [position, map]);
+  }, [position, isFollowing, map]);
 
-  return null; // UI を持たないコンポーネント
+  return null;
 }
 
 export default function CurrentLocationMap() {
-  const [position, setPosition] = useState(null); // 初期位置はnullに変更
+  const [position, setPosition] = useState(null);
+  const [isFollowing, setIsFollowing] = useState(true); // 追従モードの管理
 
   useEffect(() => {
     if ("geolocation" in navigator) {
@@ -90,9 +91,10 @@ export default function CurrentLocationMap() {
   }
 
   return (
+    <div style={{ position: "relative" }}>
     <MapContainer center={position} zoom={13} style={{ height: '80vh', width: '100%' }}>
       <TileLayer url="https://cartodb-basemaps-a.global.ssl.fastly.net/light_all/{z}/{x}/{y}{r}.png" />
-      <RecenterMap position={position} />
+      <RecenterMap position={position} isFollowing={isFollowing} />
       <Marker position={position} icon={myIcon}>
         <Popup>現在地</Popup>
       </Marker>
@@ -100,5 +102,24 @@ export default function CurrentLocationMap() {
       {/* DynamicMarker コンポーネントを使用 */}
       <DynamicMarker position={position} />
     </MapContainer>
+
+     {/* 追従モードの切り替えボタン */}
+    <button
+        onClick={() => setIsFollowing(!isFollowing)}
+        style={{
+          position: "absolute",
+          bottom: "20px",
+          right: "10px",
+          zIndex: 1000,
+          background: "white",
+          padding: "10px",
+          borderRadius: "5px",
+          cursor: "pointer"
+        }}
+      >
+        {isFollowing ? "追従ON" : "追従OFF"}
+      </button>
+    </div>
+    
   );
 }
