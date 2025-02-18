@@ -10,7 +10,12 @@ export default function Home() {
   return (
     <>
       <p>曲を登録するページ</p>
-      <button onClick={Prisma}>登録</button>
+      <button onClick={async () => {
+        const res = await fetch("/api/users", {
+          method: "GET",
+        });
+        console.log(await res.json());
+      }}>登録</button>
     </>
   )
 }

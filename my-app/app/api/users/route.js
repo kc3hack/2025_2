@@ -1,20 +1,16 @@
 import { PrismaClient } from "@prisma/client";
+import { NextResponse } from "next/server";
 const prisma = new PrismaClient();
 
-export default async function handler(req, res) {
-  if (req.method === 'POST') {
-    const { name, email } = req.body;
-    try {
-      const newUser = await prisma.user.upsert({
-        where: { email },
-        update: { name },
-        create: { name, email },
-      });
-      res.status(201).json(newUser);
-    } catch (error) {
-      res.status(400).json({ error: 'Error saving user' });
-    }
-  } else {
-    res.status(405).json({ error: 'Method not allowed' });
-  }
+export async function GET(req, res) {
+  const users = await prisma.userTable.findMany();
+  console.log(users);
+  return NextResponse.json(users);
+  // const user = await prisma.userTable.create({
+  //   data: {
+  //     UserName: "Alice",
+  //     EmailAdd: "alice@gmail.com",
+  //   },
+  // });
+  // return NextResponse.json(user);
 }
