@@ -14,7 +14,7 @@ function DynamicMarker({ position }) {
     const updateIconSize = () => {
       const zoom = map.getZoom();
       // ズームが10未満ならアイコンを非表示にする
-      if (zoom < 17) {
+      if (zoom < 13) {
         setIconSize([0, 0]);  // アイコンサイズをゼロにして消す
       } else {
         // ズームレベルに応じてアイコンサイズを変更
@@ -56,28 +56,8 @@ function RecenterMap({ position, isFollowing }) {
   return null;
 }
 
-export default function CurrentLocationMap() {
-  const [position, setPosition] = useState(null);
+export default function CurrentLocationMap({ position, musics }) {
   const [isFollowing, setIsFollowing] = useState(true); // 追従モードの管理
-
-  useEffect(() => {
-    if ("geolocation" in navigator) {
-      setInterval(() => {
-        navigator.geolocation.getCurrentPosition(
-          (pos) => {
-            const { latitude, longitude } = pos.coords;
-            console.log("位置情報を取得しました:", latitude, longitude);
-            setPosition([latitude, longitude]); // 現在地が取得できたら位置を更新
-          },
-          (error) => {
-            console.error("位置情報を取得できませんでした:", error);
-          }
-        );
-      }, 1000);
-    } else {
-      console.error("このブラウザはGeolocationに対応していません");
-    }
-  }, []);
 
   // 現在地アイコンの設定
   const myIcon = L.icon({
@@ -100,7 +80,10 @@ export default function CurrentLocationMap() {
         </Marker>
 
         {/* DynamicMarker コンポーネントを使用 */}
-        <DynamicMarker position={position} />
+        {Array.isArray(musics) ? musics.map((music, i) => (
+          <DynamicMarker key={i} position={[music.Latitude, music.Longitude]} />
+        )) : null}
+
       </MapContainer>
 
       {/* 追従モードの切り替えボタン */}
