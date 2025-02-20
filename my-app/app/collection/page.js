@@ -19,6 +19,7 @@ export default function Home() {
                 const json = await res.json();
                 console.log(json);
                 setUsers(JSON.stringify(json, null, "\t"));
+            
             } catch (error) {
                 console.error("Failed to fetch data:", error);
             }
