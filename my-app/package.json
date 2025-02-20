@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "leaflet": "^1.9.4",
+    "@prisma/client": "^6.3.1",
     "next": "15.1.7",
     "next-auth": "^4.24.11",
     "react": "^19.0.0",
@@ -23,6 +24,7 @@
     "eslint": "^9",
     "eslint-config-next": "15.1.7",
     "postcss": "^8",
+    "prisma": "^6.3.1",
     "tailwindcss": "^3.4.1"
   }
 }

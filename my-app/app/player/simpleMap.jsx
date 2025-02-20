@@ -89,12 +89,14 @@ export default function CurrentLocationMap() {
 
   return (
     <div style={{ position: "relative" }}>
-      <MapContainer center={position} zoom={13} style={{ height: '80vh', width: '100%' }}>
+      <MapContainer center={position} zoom={13} style={{ height: '100vh', width: '100%' }}>
         <TileLayer url="https://cartodb-basemaps-a.global.ssl.fastly.net/light_all/{z}/{x}/{y}{r}.png" />
         <RecenterMap position={position} isFollowing={isFollowing} />
         <Marker position={position} icon={myIcon}>
           <Popup>現在地</Popup>
         </Marker>
+
+        {/* DynamicMarker コンポーネントを使用 */}
         <DynamicMarker position={position} />
       </MapContainer>
 
