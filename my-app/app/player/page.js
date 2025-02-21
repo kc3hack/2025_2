@@ -53,29 +53,40 @@ export default function Home() {
     //     }, 1000);
     //     return () => clearInterval(loop);
     // }, []);
-    useEffect(() => {
-        const loop = setInterval(async () => {
-            setD((prev) => prev + 0.001);
-            const newPosi = [35.0127076, d];
-            setPosition(newPosi);
+    // useEffect(() => {
+    //     const loop = setInterval(async () => {
+    //         setD((prev) => prev + 0.001);
+    //         const newPosi = [35.0127076, d];
+    //         setPosition(newPosi);
 
-            const musics = await getMusic(calc(newPosi[0], newPosi[1]));
-            if (musics instanceof Promise) {
-                musics.then((data) => {
-                    console.log(data);
-                    setMusics(data);
-                });
-            } else {
-                setMusics(musics);
-            }
-        }, 1000);
-        return () => clearInterval(loop);
-    }, [d]);
+    //         const musics = await getMusic(calc(newPosi[0], newPosi[1]));
+    //         if (musics instanceof Promise) {
+    //             musics.then((data) => {
+    //                 console.log(data);
+    //                 setMusics(data);
+    //             });
+    //         } else {
+    //             setMusics(musics);
+    //         }
+    //     }, 1000);
+    //     return () => clearInterval(loop);
+    // }, [d]);
+    const nextMusic = {
+        Latitude: 35.0107,
+        Longitude: 135.7114,
+        music: {
+            ArtistName: "Peter Hollens",
+            Duration: 161158,
+            ImageUrl: "https://i.scdn.co/image/ab67616d0000b2737e4bb4e6ec2e2799e6480cf2",
+            MusicID: "spotify:track:6fRmmcYP9h2DgqcufEMj6x",
+            MusicName: "Country Roads"
+        }
+    }
 
     return (
         <>
             <SimpleMap position={position} musics={musics} />
-            <Player />
+            <Player nextMusic={nextMusic} token={token} />
         </>
     )
 }
