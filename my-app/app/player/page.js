@@ -16,6 +16,7 @@ export default function Home() {
     const token = session?.token?.access_token;
 
     const [position, setPosition] = useState([35.0127, 135.7094305]);
+    const [index, setIndex] = useState(1);
     const [musics, setMusics] = useState([]);
     const [d, setD] = useState(135.7094442);
 
@@ -71,22 +72,57 @@ export default function Home() {
     //     }, 1000);
     //     return () => clearInterval(loop);
     // }, [d]);
-    const nextMusic = {
-        Latitude: 35.0107,
-        Longitude: 135.7114,
-        music: {
-            ArtistName: "Peter Hollens",
-            Duration: 161158,
-            ImageUrl: "https://i.scdn.co/image/ab67616d0000b2737e4bb4e6ec2e2799e6480cf2",
-            MusicID: "spotify:track:6fRmmcYP9h2DgqcufEMj6x",
-            MusicName: "Country Roads"
+
+    useEffect(() => {
+        const loop = setInterval(() => {
+            setIndex((prev) => {
+                return prev + 1
+            })
+        }, 5000);
+        return () => { clearInterval(loop); }
+    }, [])
+
+    const musicData = [
+        {
+            Latitude: 35.0107,
+            Longitude: 135.7114,
+            music: {
+                ArtistName: "Peter Hollens",
+                Duration: 161158,
+                ImageUrl: "https://i.scdn.co/image/ab67616d0000b2737e4bb4e6ec2e2799e6480cf2",
+                MusicID: "spotify:track:6fRmmcYP9h2DgqcufEMj6x",
+                MusicName: "Country Roads"
+            }
+        },
+        {
+            Latitude: 35.0107,
+            Longitude: 135.7114,
+            music: {
+                ArtistName: "Mai Kuraki",
+                Duration: 245533,
+                ImageUrl: "https://i.scdn.co/image/ab67616d0000b273439ca7ef2ce81624e7ee3b7a",
+                MusicID: "spotify:track:1060Rq2jA1jKckSZV67y7H",
+                MusicName: "渡月橋 ～君 想ふ～"
+            }
+        },
+        {
+            Latitude: 35.0107,
+            Longitude: 135.7114,
+            music: {
+                ArtistName: "Ado",
+                Duration: 260368,
+                ImageUrl: "https://i.scdn.co/image/ab67616d0000b2739e1c223d7a087f9dfb3757fe",
+                MusicID: "spotify:track:5pnqpz99CGAvdzmMRsB5sD",
+                MusicName: "Elf"
+            }
         }
-    }
+
+    ];
 
     return (
         <>
             <SimpleMap position={position} musics={musics} />
-            <Player nextMusic={nextMusic} token={token} />
+            <Player nextMusic={musicData[index % 3]} token={token} />
         </>
     )
 }

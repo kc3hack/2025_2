@@ -35,13 +35,16 @@ async function getPlayer(token) {
     return player;
 }
 
-async function controlPlay(device, token) {
+async function controlPlay(device, token, musicID) {
+    console.log(musicID);
     const res = await fetch(`https://api.spotify.com/v1/me/player/play?device_id=${device}`, {
         method: "PUT",
         headers: {
             Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({}),
+        body: JSON.stringify({
+            uris: [`${musicID}`],
+        }),
     });
     if (!res.ok) {
         console.log(res)
@@ -83,12 +86,10 @@ export async function PUT(req) {
         console.log(`GET Device : ${device}`)
         switch (action) {
             case "play":
-                controlPlay(device, token);
+                controlPlay(device, token, musicID);
                 break;
             case "pause":
                 controlPause(device, token);
-                break;
-            case "next":
                 break;
             default:
                 throw new Error("action is not found")
@@ -98,15 +99,4 @@ export async function PUT(req) {
         console.log(e);
         return NextResponse.json({ message: "error" });
     }
-
-
-    switch (action) {
-        case "play":
-            break;
-        case "stop":
-            break;
-        case "next":
-            break;
-    }
-    return NextResponse.json({ message: "OK" });
 }
