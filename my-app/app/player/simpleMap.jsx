@@ -117,12 +117,12 @@ export default function CurrentLocationMap() {
         {isFollowing ? "追従ON" : "追従OFF"}
       </button>
 
-      {/* + ボタン（画面遷移） */}
+      {/* 追加ページボタン（画面遷移） */}
       <button
         onClick={() => router.push("/add")}
         style={{
           position: "absolute",
-          bottom: "20px",
+          bottom: "50px",
           right: "10px",
           zIndex: 1000,
           background: "white",
@@ -142,12 +142,12 @@ export default function CurrentLocationMap() {
         +
       </button>
 
-      {/* + ボタン（画面遷移） */}
+      {/* コレクションページ（画面遷移） */}
       <button
         onClick={() => router.push("/collection")}
         style={{
           position: "absolute",
-          bottom: "20px",
+          bottom: "50px",
           left: "10px",
           zIndex: 1000,
           background: "white",
