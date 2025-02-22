@@ -30,8 +30,8 @@ const options = {
                         UserName: session.user.name,
                     },
                 });
-            console.log('ログインに成功!');
-            } catch(error) {
+                console.log('ログインに成功!');
+            } catch (error) {
                 console.error('ログインに失敗または、ユーザデータの保存に失敗しました:', error.message);
             }
             return {
