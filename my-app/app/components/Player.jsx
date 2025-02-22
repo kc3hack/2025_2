@@ -78,7 +78,7 @@ export default function Player({ nextMusic, token }) {
                 <div className="text-lg font-bold">{nowMusic ? nowMusic.music.MusicName : "Title"}</div>
                 <div className="text-sm">{nowMusic ? nowMusic.music.ArtistName : "artist"}</div>
             </div>
-            {/* <img src="/play.gif" alt="play" className="w-16 h-8 m-4" /> */}
+            {/* <img src="/play.gif" alt="play" className="w-16 h-8 m-2" /> */}
             <button
                 className="relative w-16 h-16 flex items-center justify-center bg-white rounded-full transition-all duration-1000 overflow-hidden"
                 onClick={async () => {
