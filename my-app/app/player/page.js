@@ -69,11 +69,11 @@ export default function Home() {
                     if (minDistance > newDistance) { //より近いスポットの場合
                         minDistance = newDistance; //最短スポット更新
                         newClosestSpot = music; //最短スポットの音楽更新
-                        console.log("music",music)
+                        console.log("music", music)
                     }
                 }
                 if (newClosestSpot !== closestSpot) { //最も近いスポットが変わった場合
-                    console.log("newClosestSpot",newClosestSpot) //デバッグ用
+                    console.log("newClosestSpot", newClosestSpot) //デバッグ用
                     setClosestSpot(newClosestSpot) //最も近いスポット更新
                 }
 
@@ -139,7 +139,7 @@ export default function Home() {
         const Δσ = B * sinσ * (cos2σM + B / 4 * (cosσ * (-1 + 2 * cos2σM * cos2σM) - B / 6 * cos2σM * (-3 + 4 * sinσ * sinσ) * (-3 + 4 * cos2σM * cos2σM)));
 
         const s = b * A * (σ - Δσ); //距離sを計算
-        console.log("現在地との距離",s+"km"); //デバッグ用
+        console.log("現在地との距離", s + "km"); //デバッグ用
         return s;
     }
 

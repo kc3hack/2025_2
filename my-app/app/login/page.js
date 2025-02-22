@@ -1,37 +1,39 @@
 "use client"
-
-import { useSession } from "next-auth/react";
-import { signIn, signOut } from "next-auth/react";
-import { useEffect } from "react";
+import { useSession } from "next-auth/react"
+import { signIn, signOut } from "next-auth/react"
+import { useRouter } from "next/navigation"
 
 export default function Home() {
     const { data: session } = useSession();
+    const router = useRouter();
+    console.log(session);
     const token = session?.token?.access_token;
-
-    useEffect(() => {
-        if (session) {
-            console.log("Session data:", session);
-        }
-    },[session]);
 
     if (session) {
         return (
-            <div className="min-h-screen flex flex-col justify-center items-center bg-gray-100">
-                <div className="p-6 rounded-lg shadow-lg bg-white max-w-xs w-full text-center">
-                    <span className="block text-black font-bold mb-4">{token}</span>
-                    <p className="opacity-70 underline cursor-pointer text-blue-500" onClick={() => signOut()}>Sign Out</p>
-                </div>
+            <div className="flex flex-col items-center justify-center h-screen">
+
+                <button
+                    className="w-56 h-16 rounded-xl bg-blue-500 text-white text-2xl font-semibold shadow-lg hover:bg-blue-600 active:scale-[0.98] transition-all"
+                    onClick={() => router.push('/player')}
+                >
+                    Home
+                </button>
+                <p className='opacity-70 mt-8 mb-5 underline cursor-pointer' onClick={() => signOut()}>Sign Out</p>
+
             </div>
         );
     } else {
         return (
-            <div className="min-h-screen flex flex-col justify-center items-center bg-gray-100">
-                <button 
-                    onClick={() => signIn()} 
-                    className="w-64 h-16 rounded-full bg-white border-2 border-gray-300 text-black text-3xl shadow-lg active:scale-[0.99] transform transition-transform">
+            <div className="flex flex-col items-center justify-center h-screen">
+                <button
+                    onClick={() => signIn()}
+                    className="w-56 h-16 rounded-xl bg-blue-500 text-white text-2xl font-semibold shadow-lg hover:bg-blue-600 active:scale-[0.98] transition-all"
+                >
                     Sign In
                 </button>
             </div>
-        );
+
+        )
     }
 }
