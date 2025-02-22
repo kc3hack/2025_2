@@ -54,6 +54,7 @@ function RecenterMap({ position, isFollowing }) {
 
 export default function CurrentLocationMap({ position, musics }) {
   const [isFollowing, setIsFollowing] = useState(true); // 追従モードの管理
+  const router = useRouter();
 
   // 現在地アイコンの設定
   const myIcon = L.icon({

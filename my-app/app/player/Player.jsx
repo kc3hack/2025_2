@@ -85,7 +85,9 @@ export default function Player({ nextMusic, token, userName }) {
                     setTimeout(() => { setIsDisabled(false) }, 1000);
                     if (isDisabled) { return }
                     setIsDisabled(true);
+                    console.log("Click");
                     if (isPlay) {
+                        console.log("stop");
                         const res = await fetch("/api/player/spotify", {
                             method: "PUT",
                             headers: {
@@ -99,6 +101,7 @@ export default function Player({ nextMusic, token, userName }) {
                             setNextCheckTime((prev) => prev != 3000 ? 3000 : 3001);
                         }
                     } else {
+                        console.log("restart")
                         setNowMusic(nextMusic);
                     }
                 }}
