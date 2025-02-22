@@ -1,5 +1,8 @@
 import NextAuth from "next-auth/next";
 import SpotifyProvider from "next-auth/providers/spotify";
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
 
 const options = {
     providers: [
@@ -18,11 +21,24 @@ const options = {
             return token;
         },
         async session({ session, token }) {
+            try {
+                await prisma.userTable.upsert({
+                    where: { EmailAdd: session.user.email },
+                    update: { UserName: session.user.name },
+                    create: {
+                        EmailAdd: session.user.email,
+                        UserName: session.user.name,
+                    },
+                });
+                console.log('ログインに成功!');
+            } catch (error) {
+                console.error('ログインに失敗または、ユーザデータの保存に失敗しました:', error.message);
+            }
             return {
                 ...session,
-                token
+                token,
             };
-        }
+        },
     }
 }
 const handler = NextAuth(options);
