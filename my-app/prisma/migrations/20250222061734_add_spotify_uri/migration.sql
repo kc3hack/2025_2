@@ -20,9 +20,10 @@ CREATE TABLE `CollectionTable` (
 -- CreateTable
 CREATE TABLE `MusicTable` (
     `MusicID` VARCHAR(40) NOT NULL,
-    `MusicName` VARCHAR(30) NOT NULL,
+    `MusicName` VARCHAR(60) NOT NULL,
     `ArtistName` VARCHAR(30) NOT NULL,
     `ImageUrl` VARCHAR(191) NULL,
+    `Duration` INTEGER NOT NULL,
 
     PRIMARY KEY (`MusicID`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
