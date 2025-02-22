@@ -1,13 +1,14 @@
 "use client"
 
-import styles from "next-auth/react"
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation"; // 画面遷移のために追加
 
 export default function Home() {
     const { data: session } = useSession();
     const [searchQuery, setSearchQuery] = useState(""); // 検索ワードを管理
     const [songs, setSongs] = useState([]);
+    const router = useRouter(); // Next.js のルーターを追加
     console.log(session);
     const token = session?.token?.access_token;
 
@@ -32,6 +33,23 @@ export default function Home() {
     // 検索ボタンを押した時の処理
     const handleSearch = () => {
         fetchData(searchQuery); // 検索ワードを渡してデータを取得
+    };
+    
+    // 曲名クリック時の処理
+    const handleMusicClick = async (musicId) => {
+        try {
+            const response = await fetch(`/api/get_entryID?musicId=${encodeURIComponent(musicId)}`);
+            const data = await response.json();
+            console.log("Fetched entryID:", data); // デバッグ用
+            if (data.entryId) {
+                // プレイヤー画面に遷移
+                router.push(`/player?entryId=${data.entryId}`);
+            } else {
+                throw new Error("EntryID not found");
+            }
+        } catch (error) {
+            console.error("Error fetching entry ID:", error);
+        }
     };
 
     return (
@@ -91,7 +109,18 @@ export default function Home() {
                             alignItems: "center", 
                             width: "100%" 
                         }}>
-                            <h3 style={{ margin: "0", fontSize: "18px"}}>{song.music.MusicName}</h3>
+                            <h3 style={{ margin: "0", fontSize: "18px" }}>
+                                <a
+                                    href="#"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        handleMusicClick(song.music.MusicID);
+                                    }}
+                                    style={{ textDecoration: "underline", color: "#0070f3", cursor: "pointer" }}
+                                >
+                                    {song.music.MusicName}
+                                </a>
+                            </h3>
                             <p style={{ margin: "0", fontSize: "14px", color: "#555" }}>
                                 {new Date(song.Unlocked).toLocaleDateString()}
                             </p>
