@@ -11,21 +11,28 @@ export default function Home() {
     if (session) {
         return (
             <div className="flex flex-col items-center justify-center h-screen">
-                <span className='bold-txt'>{token}</span>
-                
-                <button 
-                        className="w-56 h-16 rounded-xl bg-blue-500 text-white text-2xl font-semibold shadow-lg hover:bg-blue-600 active:scale-[0.98] transition-all"
-                        onClick={() => router.push('/player')}
-                    >
-                        Home
-                    </button>
-                    <p className='opacity-70 mt-8 mb-5 underline cursor-pointer' onClick={() => signOut()}>Sign Out</p>
-                    
+
+                <button
+                    className="w-56 h-16 rounded-xl bg-blue-500 text-white text-2xl font-semibold shadow-lg hover:bg-blue-600 active:scale-[0.98] transition-all"
+                    onClick={() => router.push('/player')}
+                >
+                    Home
+                </button>
+                <p className='opacity-70 mt-8 mb-5 underline cursor-pointer' onClick={() => signOut()}>Sign Out</p>
+
             </div>
         )
     } else {
         return (
-            <button onClick={() => signIn()} className='shadow-primary w-56 h-16 rounded-xl bg-white border-0 text-black text-3xl active:scale-[0.99] m-6'>Sign In</button>
+            <div className="flex flex-col items-center justify-center h-screen">
+                <button
+                    onClick={() => signIn()}
+                    className="w-56 h-16 rounded-xl bg-blue-500 text-white text-2xl font-semibold shadow-lg hover:bg-blue-600 active:scale-[0.98] transition-all"
+                >
+                    Sign In
+                </button>
+            </div>
+
         )
     }
 }
