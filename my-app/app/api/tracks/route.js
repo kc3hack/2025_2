@@ -23,13 +23,17 @@ export async function POST(req) {
     console.log("🎵 Adding track:", { MusicID, MusicName , ArtistName });
 
     // すでに登録済みか確認
-    const existingTrack = await prisma.MusicTable.findUnique({
-      where: { MusicID },
+    const existingTrack = await prisma.MusicTable.findFirst({
+      where: { 
+        MusicID: MusicID,
+        Latitude: Latitude,
+        Longitude: Longitude,
+      },
     });
 
     if (existingTrack) {
       console.warn(`⚠️ Track already exists: ${MusicID}`);
-      return NextResponse.json({ message: "Track already exists" }, { status: 409 });
+      return NextResponse.json({ message: "Track already exists at this location" }, { status: 409 });
     }
 
     // 新規追加
