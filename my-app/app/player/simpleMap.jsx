@@ -13,7 +13,7 @@ function DynamicMarker({ position }) {
   useEffect(() => {
     const updateIconSize = () => {
       const zoom = map.getZoom();
-      if (zoom < 17) {
+      if (zoom < 10) {
         setIconSize([0, 0]);
       } else {
         setIconSize([zoom * 1.5, zoom * 2]);
@@ -40,7 +40,6 @@ function DynamicMarker({ position }) {
     </Marker>
   );
 }
-
 function RecenterMap({ position, isFollowing }) {
   const map = useMap();
 
@@ -53,30 +52,10 @@ function RecenterMap({ position, isFollowing }) {
   return null;
 }
 
-export default function CurrentLocationMap() {
-  const [position, setPosition] = useState(null);
-  const [isFollowing, setIsFollowing] = useState(true);
-  const router = useRouter();
+export default function CurrentLocationMap({ position, musics }) {
+  const [isFollowing, setIsFollowing] = useState(true); // 追従モードの管理
 
-  useEffect(() => {
-    if ("geolocation" in navigator) {
-      setInterval(() => {
-        navigator.geolocation.getCurrentPosition(
-          (pos) => {
-            const { latitude, longitude } = pos.coords;
-            console.log("位置情報を取得しました:", latitude, longitude);
-            setPosition([latitude, longitude]);
-          },
-          (error) => {
-            console.error("位置情報を取得できませんでした:", error);
-          }
-        );
-      }, 1000);
-    } else {
-      console.error("このブラウザはGeolocationに対応していません");
-    }
-  }, []);
-
+  // 現在地アイコンの設定
   const myIcon = L.icon({
     iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
     iconSize: [25, 41],
@@ -84,7 +63,7 @@ export default function CurrentLocationMap() {
   });
 
   if (!position) {
-    return <div>位置情報を取得中...</div>;
+    return <div>位置情報を取得中...</div>; // 位置情報が取得されるまでの表示
   }
 
   return (
