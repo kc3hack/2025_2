@@ -37,7 +37,7 @@ export default function Home() {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              MusicID: track.id,
+              MusicID: track.uri,
               MusicName: track.name,
               ArtistName: track.artists.map((artist) => artist.name).join(", "),
               ImageUrl: track.album.images[0]?.url || null,

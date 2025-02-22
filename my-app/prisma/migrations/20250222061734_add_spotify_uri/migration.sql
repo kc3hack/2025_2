@@ -20,7 +20,7 @@ CREATE TABLE `CollectionTable` (
 -- CreateTable
 CREATE TABLE `MusicTable` (
     `MusicID` VARCHAR(40) NOT NULL,
-    `MusicName` VARCHAR(30) NOT NULL,
+    `MusicName` VARCHAR(60) NOT NULL,
     `ArtistName` VARCHAR(30) NOT NULL,
     `ImageUrl` VARCHAR(191) NULL,
     `Duration` INTEGER NOT NULL,

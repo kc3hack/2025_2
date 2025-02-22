@@ -15,7 +15,7 @@ export async function POST(req) {
     const { MusicID, MusicName, ArtistName, ImageUrl, Duration ,Latitude, Longitude } = body;
     
     // 必須パラメータのチェック
-    if (!MusicID || !MusicName || !ArtistName) {
+    if (!MusicID || !MusicName || !ArtistName|| Latitude == null || Longitude == null) {
       console.error("❌ Missing required fields:", { MusicID, MusicName,ArtistName, ImageUrl, Duration});
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
@@ -43,7 +43,7 @@ export async function POST(req) {
     // EntryTable にもデータ追加
     const entry = await prisma.entryTable.create({
       data: {
-        MusicID: track.MusicID, // さっき追加した曲の MusicID
+        MusicID: MusicID,
         Latitude,
         Longitude,
         BlockNo,
