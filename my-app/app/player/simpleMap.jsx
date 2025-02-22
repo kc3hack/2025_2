@@ -13,7 +13,7 @@ function DynamicMarker({ position }) {
   useEffect(() => {
     const updateIconSize = () => {
       const zoom = map.getZoom();
-      if (zoom < 17) {
+      if (zoom < 10) {
         setIconSize([0, 0]);
       } else {
         setIconSize([zoom * 1.5, zoom * 2]);

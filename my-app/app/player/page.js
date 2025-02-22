@@ -10,14 +10,14 @@ export default function Home() {
 
     const [position, setPosition] = useState([35.0127, 135.7094305]);
     const [musics, setMusics] = useState([]);
-    const [blockNo, setBlockno] = useState(calcBlockNo(position[0], position[1]));
+    const [blockNo, setBlockno] = useState(0);
     const [closestSpot, setClosestSpot] = useState(null);
 
     /* blockNoにある音楽をGETする */
     async function getMusic(blockNo) {
         const res = await fetch(`/api/player?blockNo=${blockNo}`);
         const musics = await res.json();
-        // console.log("musics:",musics); //デバッグ用
+        console.log("musics:", musics); //デバッグ用
         return musics;
     }
 
@@ -43,10 +43,9 @@ export default function Home() {
             // console.log("hello"); //デバッグ用
             /* 現在地の緯度経度からBlockNumや最も近いスポットの更新、CollectionTableへの登録をする */
             navigator.geolocation.getCurrentPosition(async (posi) => {
-                console.log("現在地取得中")
                 /* 現在地の緯度経度を取得する */
                 const newPosi = [posi.coords.latitude, posi.coords.longitude]; //新たな現在地情報の緯度と経度を取得
-                console.log("newPosi:", newPosi); //新たな現在地を表示
+                // console.log("newPosi:", newPosi); //新たな現在地を表示
                 setPosition(newPosi); //現在地を更新
 
                 /* 現在地からBlockNoを計算、更新する */
@@ -68,7 +67,7 @@ export default function Home() {
                     if (minDistance > newDistance) { //より近いスポットの場合
                         minDistance = newDistance; //最短スポット更新
                         newClosestSpot = music; //最短スポットの音楽更新
-                        console.log("music", music)
+                        // console.log("music", music)
                     }
                 }
                 if (newClosestSpot !== closestSpot) { //最も近いスポットが変わった場合
@@ -138,7 +137,7 @@ export default function Home() {
         const Δσ = B * sinσ * (cos2σM + B / 4 * (cosσ * (-1 + 2 * cos2σM * cos2σM) - B / 6 * cos2σM * (-3 + 4 * sinσ * sinσ) * (-3 + 4 * cos2σM * cos2σM)));
 
         const s = b * A * (σ - Δσ); //距離sを計算
-        console.log("現在地との距離", s + "km"); //デバッグ用
+        // console.log("現在地との距離", s + "km"); //デバッグ用
         return s;
     }
 
@@ -146,6 +145,11 @@ export default function Home() {
     return (
         <>
             <SimpleMap position={position} musics={musics} />
+            {/* デバッグ用ボタン */}
+            <button className="b-0" onClick={() => {
+                console.log("Click");
+                setBlockno(0);
+            }}>再読み込み</button>
         </>
     )
 }
