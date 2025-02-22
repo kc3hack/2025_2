@@ -23,7 +23,7 @@ export async function POST(req) {
     console.log("🎵 Adding track:", { MusicID, MusicName , ArtistName });
 
     // すでに登録済みか確認
-    const existingTrack = await prisma.MusicTable.findFirst({
+    const existingTrack = await prisma.entryTable.findFirst({
       where: { 
         MusicID: MusicID,
         Latitude: Latitude,
