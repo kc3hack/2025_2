@@ -4,13 +4,6 @@ import dynamic from 'next/dynamic';
 import { useMemo, useState, useEffect } from 'react';
 import Player from "../components/player";
 
-/* blockNoにある音楽をGETする */
-async function getMusic(blockNo) {
-    const res = await fetch(`/api/player?blockNo=${blockNo}`);
-    const musics = await res.json();
-    console.log(blockNo);
-    return musics;
-}
 
 export default function Home() {
     const { data: session } = useSession();
@@ -20,6 +13,14 @@ export default function Home() {
     const [musics, setMusics] = useState([]);
     const [blockNo, setBlockno] = useState(calcBlockNo(position[0], position[1]));
     const [closestSpot, setClosestSpot] = useState(null);
+
+    /* blockNoにある音楽をGETする */
+    async function getMusic(blockNo) {
+        const res = await fetch(`/api/player?blockNo=${blockNo}`);
+        const musics = await res.json();
+        // console.log("musics:",musics); //デバッグ用
+        return musics;
+    }
 
     const SimpleMap = useMemo(
         () =>
@@ -37,65 +38,54 @@ export default function Home() {
 
     /* コンポーネントがレンダリングされたときに実行される */
     useEffect(() => {
-        console.log("Start");
+        // console.log("Start"); //デバッグ用
         /* 繰り返されて実行される関数 */
         const loop = setInterval(() => {
-
+            // console.log("hello"); //デバッグ用
             /* 現在地の緯度経度からBlockNumや最も近いスポットの更新、CollectionTableへの登録をする */
             navigator.geolocation.getCurrentPosition(async (posi) => {
-
+                console.log("現在地取得中")
                 /* 現在地の緯度経度を取得する */
                 const newPosi = [posi.coords.latitude, posi.coords.longitude]; //新たな現在地情報の緯度と経度を取得
-                console.log(newPosi); //新たな現在地を表示
+                console.log("newPosi:", newPosi); //新たな現在地を表示
                 setPosition(newPosi); //現在地を更新
 
                 /* 現在地からBlockNoを計算、更新する */
                 const newBlockNo = calcBlockNo(newPosi[0], newPosi[1]); //現在地のBlockNoを計算
+                // console.log("newBlockNo", newBlockNo); //デバッグ用
                 if (newBlockNo !== blockNo) { //BlockNoが変化した場合
                     setBlockno(newBlockNo); //BlockNoを更新
                     const musics = await getMusic(newBlockNo); //BlockNoにある音楽を新たに取得
                     setMusics(musics); //BlockNoにある音楽を更新
                 }
+                // console.log("musics",musics); //デバッグ用
 
                 /* 現在地と最も近いスポットの曲を導く */
                 let minDistance = Infinity; //最短距離
                 let newClosestSpot = null; //新しい最短スポット
                 for (const music of musics) {
+                    if (music == Array(0)) return;
                     const newDistance = calcVincentyDistance(newPosi[0], newPosi[1], music.Latitude, music.Longitude);
                     if (minDistance > newDistance) { //より近いスポットの場合
                         minDistance = newDistance; //最短スポット更新
                         newClosestSpot = music; //最短スポットの音楽更新
+                        console.log("music",music)
                     }
                 }
-
-                /* 最も近いスポットの曲をCollectionTableに保存 */
-                if (closestSpot !== newClosestSpot) { //最も近いスポットが変更された場合
-                    setClosestSpot(newClosestSpot); //最も近いスポットを更新
-
-                    const saveMusic = async () => {
-                        const response = await fetch('/api/collectiondb/route', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({
-                                EmailAdd: session.user.email,
-                                MusicID: newClosestSpot.music.MusicID,
-                            }),
-                        });
-                        if (!response.ok) {
-                            console.log('Failed to save music');
-                        }
-                    };
-                    saveMusic();
+                if (newClosestSpot !== closestSpot) { //最も近いスポットが変わった場合
+                    console.log("newClosestSpot",newClosestSpot) //デバッグ用
+                    setClosestSpot(newClosestSpot) //最も近いスポット更新
                 }
 
-            }, 1000); //1000ms(1s)毎に繰り返す
+            }, (error) => {
+                console.error(error);
+            }, { enableHighAccuracy: true, timeout: 1000, maximumAge: 0 }); // 現在位置を常に正確に取得し、1000ms以内に取得できないとエラーとなる
+        }, 1000); //1000ms(1s)毎に繰り返す
 
-            return () => clearInterval(loop); //コンポーネントがアンマウントされたときにsetIntervalの中身を消去
-        }, [blockNo]); //blockNoに依存して実行される
-    }, [blockNo]);
+        return () => clearInterval(loop); //コンポーネントがアンマウントされたときにsetIntervalの中身を消去
+    }, [blockNo, musics, closestSpot]); //blockNo, musics, closestSpotに依存して実行される
 
+    /* 以下、距離計算のための関数 */
     /* 度からラジアンに */
     function toRadians(degrees) {
         return degrees * Math.PI / 180;
@@ -127,7 +117,7 @@ export default function Home() {
         do {
             const sinλ = Math.sin(λ); //方位角の正弦と
             const cosλ = Math.cos(λ); //余弦を計算
-            // sinσ = Math.sqrt((cosU2 * sinλ) * (cosU2 * sinλ) + (cosU1 * sinU2 - sinU1 * cosU2 * cosλ) * (cosU1 * sinU2 - sinU1 * cosU2 * cosλ)); //修正された距離の正弦を計算
+            sinσ = Math.sqrt((cosU2 * sinλ) * (cosU2 * sinλ) + (cosU1 * sinU2 - sinU1 * cosU2 * cosλ) * (cosU1 * sinU2 - sinU1 * cosU2 * cosλ)); //修正された距離の正弦を計算
             if (sinσ === 0) return 0; //共通点の場合の処理
             cosσ = sinU1 * sinU2 + cosU1 * cosU2 * cosλ; //修正された距離の余弦を計算
             σ = Math.atan2(sinσ, cosσ); //距離を計算
@@ -149,10 +139,9 @@ export default function Home() {
         const Δσ = B * sinσ * (cos2σM + B / 4 * (cosσ * (-1 + 2 * cos2σM * cos2σM) - B / 6 * cos2σM * (-3 + 4 * sinσ * sinσ) * (-3 + 4 * cos2σM * cos2σM)));
 
         const s = b * A * (σ - Δσ); //距離sを計算
-
+        console.log("現在地との距離",s+"km"); //デバッグ用
         return s;
     }
-
 
 
     return (
