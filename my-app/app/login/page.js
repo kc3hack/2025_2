@@ -8,6 +8,13 @@ export default function Home() {
     const router = useRouter();
     console.log(session);
     const token = session?.token?.access_token;
+
+    useEffect(() => {
+        if (session) {
+            console.log("Session data:", session);
+        }
+    }, [session]);
+
     if (session) {
         return (
             <div className="flex flex-col items-center justify-center h-screen">
@@ -21,7 +28,7 @@ export default function Home() {
                 <p className='opacity-70 mt-8 mb-5 underline cursor-pointer' onClick={() => signOut()}>Sign Out</p>
 
             </div>
-        )
+        );
     } else {
         return (
             <div className="flex flex-col items-center justify-center h-screen">
