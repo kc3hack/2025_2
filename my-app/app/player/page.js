@@ -2,23 +2,23 @@
 import { useSession } from "next-auth/react"
 import dynamic from 'next/dynamic';
 import { useMemo, useState, useEffect } from 'react';
-
+import { kdTree } from 'kd-tree-javascript';
 
 export default function Home() {
     const { data: session } = useSession();
     const token = session?.token?.access_token;
 
-    const [position, setPosition] = useState([35.0127, 135.7094305]);
-    const [musics, setMusics] = useState([]);
-    const [blockNo, setBlockno] = useState(0);
-    const [closestSpot, setClosestSpot] = useState(null);
+    const [currentPosition, setCurrentPosition] = useState([35.0127, 135.7094305]);
+    const [musicList, setMusicList] = useState([]);
+    const [currentBlockNo, setCurrentBlockNo] = useState(0);
+    const [nearestMusicSpot, setNearestMusicSpot] = useState(null);
 
-    /* blockNoにある音楽をGETする */
-    async function getMusic(blockNo) {
+    /* 現在のBlockNoにある音楽を取得する */
+    async function fetchMusic(blockNo) {
         const res = await fetch(`/api/player?blockNo=${blockNo}`);
-        const musics = await res.json();
-        console.log("musics:", musics); //デバッグ用
-        return musics;
+        const musicData = await res.json();
+        // console.log("musics:", musicData); //デバッグ用
+        return musicData;
     }
 
     const SimpleMap = useMemo(
@@ -30,58 +30,68 @@ export default function Home() {
         []
     );
 
-    /* BlockNoを計算する */
-    function calcBlockNo(Latitude, Longitude) {
-        return (Math.floor((Latitude + 90) / 0.01) * 2700 + Math.floor((Longitude + 180) / 0.01));
+    /* 緯度経度からBlockNoを計算する */
+    function calculateBlockNo(latitude, longitude) {
+        return (Math.floor((latitude + 90) / 0.01) * 2700 + Math.floor((longitude + 180) / 0.01));
     }
 
     /* コンポーネントがレンダリングされたときに実行される */
     useEffect(() => {
         // console.log("Start"); //デバッグ用
         /* 繰り返されて実行される関数 */
-        const loop = setInterval(() => {
+        const updateLocation = setInterval(() => {
             // console.log("hello"); //デバッグ用
             /* 現在地の緯度経度からBlockNumや最も近いスポットの更新、CollectionTableへの登録をする */
-            navigator.geolocation.getCurrentPosition(async (posi) => {
+            navigator.geolocation.getCurrentPosition(async (position) => {
                 /* 現在地の緯度経度を取得する */
-                const newPosi = [posi.coords.latitude, posi.coords.longitude]; //新たな現在地情報の緯度と経度を取得
-                // console.log("newPosi:", newPosi); //新たな現在地を表示
-                setPosition(newPosi); //現在地を更新
+                const newPosition = [position.coords.latitude, position.coords.longitude]; //新たな現在地情報の緯度と経度を取得
+                console.log("現在地:", newPosition); //新たな現在地を表示
+                setCurrentPosition(newPosition); //現在地を更新
 
                 /* 現在地からBlockNoを計算、更新する */
-                const newBlockNo = calcBlockNo(newPosi[0], newPosi[1]); //現在地のBlockNoを計算
+                const newBlockNo = calculateBlockNo(newPosition[0], newPosition[1]); //現在地のBlockNoを計算
                 // console.log("newBlockNo", newBlockNo); //デバッグ用
-                if (newBlockNo !== blockNo) { //BlockNoが変化した場合
-                    setBlockno(newBlockNo); //BlockNoを更新
-                    const musics = await getMusic(newBlockNo); //BlockNoにある音楽を新たに取得
-                    setMusics(musics); //BlockNoにある音楽を更新
+                if (newBlockNo !== currentBlockNo) { //BlockNoが変化した場合
+                    setCurrentBlockNo(newBlockNo); //BlockNoを更新
+                    const musicData = await fetchMusic(newBlockNo); //BlockNoにある音楽を新たに取得
+                    setMusicList(musicData); //BlockNoにある音楽を更新
+                    // console.log("musics", musicData); //デバッグ用
                 }
-                // console.log("musics",musics); //デバッグ用
 
-                /* 現在地と最も近いスポットの曲を導く */
-                let minDistance = Infinity; //最短距離
-                let newClosestSpot = null; //新しい最短スポット
-                for (const music of musics) {
-                    if (music == Array(0)) return;
-                    const newDistance = calcVincentyDistance(newPosi[0], newPosi[1], music.Latitude, music.Longitude);
-                    if (minDistance > newDistance) { //より近いスポットの場合
-                        minDistance = newDistance; //最短スポット更新
-                        newClosestSpot = music; //最短スポットの音楽更新
-                        // console.log("music", music)
+                /* kdtreeを使った最短距離の計算 */
+                const distance = (a, b) => {
+                    return calculateVincentyDistance(a.Latitude, a.Longitude, b.Latitude, b.Longitude);
+                };
+                const tree = new kdTree(musicList, distance, ["Latitude", "Longitude"]);
+                const nearest = tree.nearest({ Latitude: newPosition[0], Longitude: newPosition[1] }, 1);
+                if (nearest.length > 0) {
+                    const closestMusic = nearest[0][0];
+                    if (nearestMusicSpot !== closestMusic) {
+                        console.log("最も近いスポット", closestMusic); //デバッグ用
+                        setNearestMusicSpot(closestMusic);
                     }
-                }
-                if (newClosestSpot !== closestSpot) { //最も近いスポットが変わった場合
-                    console.log("newClosestSpot", newClosestSpot) //デバッグ用
-                    setClosestSpot(newClosestSpot) //最も近いスポット更新
                 }
 
             }, (error) => {
-                console.error(error);
+                console.log("Geolocation error:", error);
+                switch (error.code) {
+                    case error.PERMISSION_DENIED:
+                        console.error("User denied the request for Geolocation.");
+                        break;
+                    case error.POSITION_UNAVAILABLE:
+                        console.error("Location information is unavailable.");
+                        break;
+                    case error.TIMEOUT:
+                        console.error("The request to get user location timed out.");
+                        break;
+                    case error.UNKNOWN_ERROR:
+                        console.error("An unknown error occurred.");
+                        break;
+                }
             }, { enableHighAccuracy: true, timeout: 1000, maximumAge: 0 }); // 現在位置を常に正確に取得し、1000ms以内に取得できないとエラーとなる
         }, 1000); //1000ms(1s)毎に繰り返す
-
-        return () => clearInterval(loop); //コンポーネントがアンマウントされたときにsetIntervalの中身を消去
-    }, [blockNo, musics, closestSpot]); //blockNo, musics, closestSpotに依存して実行される
+        return () => clearInterval(updateLocation); //コンポーネントがアンマウントされたときにsetIntervalの中身を消去
+    }, [currentBlockNo, musicList, nearestMusicSpot, currentPosition]); //currentBlockNo, musicList, nearestMusicSpot, currentPositionに依存して実行される
 
     /* 以下、距離計算のための関数 */
     /* 度からラジアンに */
@@ -90,7 +100,7 @@ export default function Home() {
     }
 
     /* Vincenty法 */
-    function calcVincentyDistance(lat1, lon1, lat2, lon2) { //始点の緯度・経度、終点の緯度・経度から計算
+    function calculateVincentyDistance(lat1, lon1, lat2, lon2) { //始点の緯度・経度、終点の緯度・経度から計算
         const a = 6378137.0; // WGS-84 長半径（赤道半径）（メートル）
         const f = 1 / 298.257223563; // 扁平率
         const b = (1 - f) * a; //短半径を計算
@@ -137,14 +147,14 @@ export default function Home() {
         const Δσ = B * sinσ * (cos2σM + B / 4 * (cosσ * (-1 + 2 * cos2σM * cos2σM) - B / 6 * cos2σM * (-3 + 4 * sinσ * sinσ) * (-3 + 4 * cos2σM * cos2σM)));
 
         const s = b * A * (σ - Δσ); //距離sを計算
-        // console.log("現在地との距離", s + "km"); //デバッグ用
+        console.log("現在地との距離", s/1000 + "km"); //デバッグ用
         return s;
     }
 
 
     return (
         <>
-            <SimpleMap position={position} musics={musics} />
+            <SimpleMap position={currentPosition} musics={musicList} />
             {/* デバッグ用ボタン */}
             <button className="b-0" onClick={() => {
                 console.log("Click");
