@@ -1,67 +1,4 @@
 "use client"
-// import { useSession } from "next-auth/react"
-// import { useState } from "react";
-// import axios from "axios";
-
-// export default function Home() {
-//   const [query, setQuery] = useState("");
-//   const [tracks, setTracks] = useState([]);
-
-//   const { data: session } = useSession();
-//   const token = session?.token?.access_token;
-
-//   const searchTracks = async () => {
-//     if (!query) return;
-
-//     try {
-//       // const response = await axios.get(`/api/search?query=${query}`);
-//       const response = await fetch(`/api/search`, {
-//         method: 'POST',
-//         headers: {
-//           Authorization: `Bearer ${token}`,
-//           "Content-Type": "application/json",
-//         },
-//         body: JSON.stringify({ token, query }),
-//       });
-//       if (!response.ok) {
-//         throw new Error("Failed to fetch tracks");
-//       }
-//       const data = await response.json();
-//       setTracks(data.tracks);
-//       // setTracks(response.data.tracks.items);
-//     } catch (error) {
-//       console.error("Error fetching tracks:", error);
-//     }
-//   };
-
-//   return (
-//     <div>
-//       <h1>Seach</h1>
-//       <input
-//         type="text"
-//         placeholder="曲名またはアーティスト名"
-//         value={query}
-//         onChange={(e) => setQuery(e.target.value)}
-//       />
-//       <button onClick={searchTracks}>検索</button>
-
-//       {tracks.length > 0 && (
-//         <ul>
-//           {tracks.map((track) => (
-//             <li key={track.id}>
-//               <img src={track.album.images[0]?.url} alt={track.name} width={50} />
-//               <p>{track.name} - {track.artists.map((artist) => artist.name).join(", ")}</p>
-//               <audio controls>
-//                 <source src={track.preview_url} type="audio/mpeg" />
-//                 ブラウザが audio タグをサポートしていません。
-//               </audio>
-//             </li>
-//           ))}
-//         </ul>
-//       )}
-//     </div>
-//   );
-// }
 
 import { useState } from "react";
 import axios from "axios";
@@ -84,9 +21,52 @@ export default function Home() {
     }
   };
 
-  const addTrack = (track) => {
-    console.log("🎵 追加された曲:", track);
-    alert(`「${track.name}」を追加しました`);
+  const addTrack = async (track) => {
+    try {
+      // 現在地を取得
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const Latitude = position.coords.latitude;
+          const Longitude = position.coords.longitude;
+  
+          console.log("📍 現在地:", { Latitude, Longitude });
+  
+          const response = await fetch("/api/tracks", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              MusicID: track.id,
+              MusicName: track.name,
+              ArtistName: track.artists.map((artist) => artist.name).join(", "),
+              ImageUrl: track.album.images[0]?.url || null,
+              Duration: 0,
+              Latitude,
+              Longitude,
+            }),
+          });
+  
+          const result = await response.json();
+          console.log("📥 API Response:", result);
+  
+          if (response.status === 201) {
+            alert(`✅「${track.name}」を追加しました！`);
+          } else if (response.status === 409) {
+            alert(`⚠️「${track.name}」はすでに登録されています。`);
+          } else {
+            throw new Error(result.error || "Failed to add track");
+          }
+        },
+        (error) => {
+          console.error("❌ 位置情報の取得に失敗:", error);
+          alert("⚠️ 位置情報の取得に失敗しました。位置情報を許可してください。");
+        }
+      );
+    } catch (error) {
+      console.error("❌ Error saving track:", error);
+      alert("⚠️ 曲の追加に失敗しました。");
+    }
   };
 
   return (
