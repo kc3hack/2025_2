@@ -2,11 +2,12 @@
 import { useSession } from "next-auth/react"
 import dynamic from 'next/dynamic';
 import { useMemo, useState, useEffect } from 'react';
-
+import Player from './Player';
 
 export default function Home() {
     const { data: session } = useSession();
     const token = session?.token?.access_token;
+    const userName = session?.user.email;
 
     const [position, setPosition] = useState([35.0127, 135.7094305]);
     const [musics, setMusics] = useState([]);
@@ -145,6 +146,7 @@ export default function Home() {
     return (
         <>
             <SimpleMap position={position} musics={musics} />
+            <Player nextMusic={closestSpot} token={token} userName={userName} />
             {/* デバッグ用ボタン */}
             <button className="b-0" onClick={() => {
                 console.log("Click");

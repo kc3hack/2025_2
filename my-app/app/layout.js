@@ -11,7 +11,9 @@ export default function RootLayout({ children }) {
     <html lang="ja">
       <body>
         <AuthProvider>
-          {children}
+          <div>
+            {children}
+          </div>
         </AuthProvider>
       </body>
     </html>
