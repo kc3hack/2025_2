@@ -9,12 +9,6 @@ export default function Home() {
     console.log(session);
     const token = session?.token?.access_token;
 
-    useEffect(() => {
-        if (session) {
-            console.log("Session data:", session);
-        }
-    }, [session]);
-
     if (session) {
         return (
             <div className="flex flex-col items-center justify-center h-screen">
