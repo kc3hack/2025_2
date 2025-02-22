@@ -2,7 +2,6 @@
 import { useSession } from "next-auth/react"
 import dynamic from 'next/dynamic';
 import { useMemo, useState, useEffect } from 'react';
-import Player from "../components/player";
 
 
 export default function Home() {
@@ -147,7 +146,6 @@ export default function Home() {
     return (
         <>
             <SimpleMap position={position} musics={musics} />
-            <Player />
         </>
     )
 }
