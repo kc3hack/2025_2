@@ -1,0 +1,13 @@
+/* 地図を画面全体に表示 */
+.leaflet-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100%;
+  }
+  
+  /* 通常カーソル */
+  .leaflet-grab {
+    cursor: auto;
+  }
