@@ -1,7 +1,7 @@
 "use client"
 import { useState, useEffect } from "react";
 
-export default function Player({ nextMusic, token }) {
+export default function Player({ nextMusic, token, userName }) {
     const [isPlay, setIsPlay] = useState(false);
     const [nextCheckTime, setNextCheckTime] = useState(500);
     const [nowMusic, setNowMusic] = useState(null);
@@ -52,7 +52,7 @@ export default function Player({ nextMusic, token }) {
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ action: "play", token, musicID: nowMusic.music.MusicID })
+                body: JSON.stringify({ action: "play", token, musicID: nowMusic.music.MusicID, userName })
             })
             if (!res.ok) {
                 console.log(res);

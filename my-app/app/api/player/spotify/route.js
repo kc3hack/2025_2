@@ -1,4 +1,7 @@
 import { NextResponse } from 'next/server'
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
 
 //複数台起動時の処理を追加してもいいかも
 async function getDevice(token) {
@@ -35,7 +38,7 @@ async function getPlayer(token) {
     return player;
 }
 
-async function controlPlay(device, token, musicID) {
+async function controlPlay(device, token, musicID, userName) {
     console.log(musicID);
     const res = await fetch(`https://api.spotify.com/v1/me/player/play?device_id=${device}`, {
         method: "PUT",
@@ -50,6 +53,14 @@ async function controlPlay(device, token, musicID) {
         console.log(res)
         throw new Error("Failed to play")
     }
+    const collection = await prisma.CollectionTable.create({
+        data: {
+            EmailAdd: userName,
+            MusicID: musicID,
+            Unlocked: new Date(),
+        }
+    });
+    await prisma.$disconnect();
 }
 async function controlPause(device, token) {
     const res = await fetch(`https://api.spotify.com/v1/me/player/pause?device_id=${device}`, {
@@ -79,14 +90,14 @@ export async function GET(req) {
 }
 
 export async function PUT(req) {
-    const { action, token, musicID } = await req.json();
+    const { action, token, musicID, userName } = await req.json();
 
     try {
         const device = await getDevice(token);
         console.log(`GET Device : ${device}`)
         switch (action) {
             case "play":
-                controlPlay(device, token, musicID);
+                controlPlay(device, token, musicID, userName);
                 break;
             case "pause":
                 controlPause(device, token);

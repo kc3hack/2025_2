@@ -13,7 +13,9 @@ async function getMusic(blockNo) {
 
 export default function Home() {
     const { data: session } = useSession();
+    console.log(session);
     const token = session?.token?.access_token;
+    const userName = session?.user.email;
 
     const [position, setPosition] = useState([35.0127, 135.7094305]);
     const [index, setIndex] = useState(1);
@@ -122,7 +124,7 @@ export default function Home() {
     return (
         <>
             <SimpleMap position={position} musics={musics} />
-            <Player nextMusic={musicData[index % 3]} token={token} />
+            <Player nextMusic={musicData[index % 3]} token={token} userName={userName} />
         </>
     )
 }
