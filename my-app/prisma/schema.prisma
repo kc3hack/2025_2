@@ -28,7 +28,8 @@ model CollectionTable {
 
 model MusicTable {
   MusicID    String   @id @db.VarChar(40)
-  MusicName  String   @db.VarChar(30)
+  MusicName  String   @db.VarChar(60)
+  //SpotifyId  String  @unique @db.VarChar(40)
   ArtistName String   @db.VarChar(30)
   ImageUrl   String?  // NULL許可のため `?` をつける
   Duration   Int      
