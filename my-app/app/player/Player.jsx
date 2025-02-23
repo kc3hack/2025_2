@@ -121,7 +121,7 @@ export default function Player({ nextMusic, token, userName }) {
                         }
                     } else {
                         console.log("restart")
-                        setNowMusic(nextMusic);
+                        setNowMusic({ ...nextMusic });
                     }
                 }}
             >
