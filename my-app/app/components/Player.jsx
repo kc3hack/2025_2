@@ -95,6 +95,7 @@ export default function Player({ nextMusic, token, userName }) {
                 <div className="text-sm">{nowMusic ? nowMusic.music.ArtistName : "artist"}</div>
             </div>
             {/* <img src="/play.gif" alt="play" className="w-16 h-8 m-2" /> */}
+            {isPlay ? <img src="/play.gif" alt="play" className="w-16 h-8 m-2"></img> : <img src="/pause.png" alt="pause" className="w-16 h-8 m-2"></img>}
             <button
                 className="relative w-16 h-16 flex items-center justify-center bg-white rounded-full transition-all duration-1000 overflow-hidden"
                 onClick={async () => {
