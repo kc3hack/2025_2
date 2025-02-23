@@ -11,6 +11,7 @@ export default function Home() {
     const [searchQuery, setSearchQuery] = useState(""); // 検索クエリの状態を管理
     const [songs, setSongs] = useState([]); // 取得した曲データを管理
     const [playMusic, setPlayMusic] = useState(null);
+    const [sortOrder, setSortOrder] = useState("desc");
 
     const router = useRouter(); // ルーターの初期化
     const token = session?.token?.access_token; // 認証トークン（未使用）
@@ -23,10 +24,10 @@ export default function Home() {
     }, [session]);
 
     // データを取得する関数
-    const fetchData = async (query = "") => {
+    const fetchData = async (query = "", order = sortOrder) => {
         try {
             // APIエンドポイントに検索クエリとユーザーのメールアドレスを渡す
-            const res = await fetch(`/api/collectiondb?email=${encodeURIComponent(session.user.email)}&query=${encodeURIComponent(query)}&sort=desc`);
+            const res = await fetch(`/api/collectiondb?email=${encodeURIComponent(session.user.email)}&query=${encodeURIComponent(query)}&sort=${order}`);
             const json = await res.json(); // JSONレスポンスを取得
             setSongs(json); // 取得したデータを状態にセット
         } catch (error) {
@@ -39,6 +40,13 @@ export default function Home() {
     // 検索ボタンを押したときに検索を実行
     const handleSearch = () => {
         fetchData(searchQuery);
+    };
+
+     // ソート順を切り替える処理
+     const toggleSortOrder = () => {
+        const newOrder = sortOrder === "desc" ? "asc" : "desc";
+        setSortOrder(newOrder);
+        fetchData(searchQuery, newOrder); // ソート切り替え時にデータ再取得
     };
 
     // 曲をクリックしたときに詳細ページへ遷移する処理
@@ -58,6 +66,9 @@ export default function Home() {
     return (
         <>
             <div className="container">
+                <button className="back-button" onClick={() => router.push("/player")}>
+                    ←
+                </button>
                 <h1 className="title">Collections</h1>
 
                 {/* 検索ボックス */}
@@ -71,6 +82,14 @@ export default function Home() {
                     />
                     <button onClick={handleSearch} className="search-button">検索</button>
                 </div>
+                {/* ソート切り替えボタン */}
+                {songs.length > 0 && (
+                <div className="sort-button-container">
+                    <button onClick={toggleSortOrder} className="sort-button">
+                        {sortOrder === "desc" ? "new" : "old"}
+                    </button>
+                </div>
+                )}
 
                 {/* 取得した曲リストの表示 */}
                 {songs.length > 0 ? (
