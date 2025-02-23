@@ -130,12 +130,14 @@ export default function Home() {
                 setPosition([...currentPosition]); // 位置を更新
 
                 /* BlockNoの計算と更新 */
-                const newBlockNo = calcBlockNo(currentPosition[0], currentPosition[1]);
-                if (newBlockNo !== blockNo) {
-                    setBlockno(newBlockNo);
-                    const musics = await getMusic(newBlockNo);
-                    setMusics(musics);
-                }
+                setBlockno((prevBlockNo) => {
+                    const newBlockNo = calcBlockNo(currentPosition[0], currentPosition[1]);
+                    if (newBlockNo !== prevBlockNo) {
+                        getMusic(newBlockNo).then((musics) => setMusics(musics));
+                        return newBlockNo;
+                    }
+                    return prevBlockNo;
+                });
 
                 currentStep++;
             }, 1000); // 1秒ごとに移動
