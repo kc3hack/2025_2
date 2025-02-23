@@ -12,20 +12,17 @@ export async function GET(req) {
             return NextResponse.json({ error: 'MusicID is required' }, { status: 400 });
         }
 
-        const entry = await prisma.EntryTable.findFirst({
+        const music = await prisma.MusicTable.findFirst({
             where: {
                 MusicID: musicId,
             },
-            select: {
-                EntryID: true,
-            },
         });
 
-        if (!entry) {
+        if (!music) {
             return NextResponse.json({ error: 'Entry not found' }, { status: 404 });
         }
 
-        return NextResponse.json({ entryId: entry.EntryID });
+        return NextResponse.json({ music });
     } catch (e) {
         console.error("Error:", e);
         return NextResponse.json({ error: e.message }, { status: 500 });

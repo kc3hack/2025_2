@@ -112,12 +112,12 @@ export default function CurrentLocationMap({ position, musics }) {
           padding: "10px",
           borderRadius: "50%",
           cursor: "pointer",
-          width: "40px",
-          height: "40px",
+          width: "60px",
+          height: "60px",
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          fontSize: "20px",
+          fontSize: "30px",
           fontWeight: "bold",
           boxShadow: "0 2px 5px rgba(0,0,0,0.3)"
         }}
@@ -137,12 +137,12 @@ export default function CurrentLocationMap({ position, musics }) {
           padding: "10px",
           borderRadius: "50%",
           cursor: "pointer",
-          width: "40px",
-          height: "40px",
+          width: "60px",
+          height: "60px",
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          fontSize: "20px",
+          fontSize: "30px",
           fontWeight: "bold",
           boxShadow: "0 2px 5px rgba(0,0,0,0.3)"
         }}

@@ -13,7 +13,7 @@ async function getDevice(token) {
     });
     if (!res.ok) {
         console.log(res.statusText);
-        throw new Error("Failed to get devices");
+        throw new Error(res.statusText);
     }
     const devices = await res.json();
     const smartPhone = devices.devices.filter((device) => {
@@ -32,7 +32,9 @@ async function getPlayer(token) {
             Authorization: `Bearer ${token}`,
         },
     });
-    console.log(res.statusText);
+    if (!res.ok) {
+        throw new Error(res.statusText);
+    }
     const player = await res.json();
     console.log(player.progress_ms)
     return player;
@@ -51,7 +53,7 @@ async function controlPlay(device, token, musicID, userName) {
     });
     if (!res.ok) {
         console.log(res)
-        throw new Error("Failed to play")
+        throw new Error(res.statusText);
     }
     const collection = await prisma.CollectionTable.create({
         data: {
@@ -71,7 +73,7 @@ async function controlPause(device, token) {
     });
     if (!res.ok) {
         console.log(res)
-        throw new Error("Failed to pause")
+        throw new Error(res.statusText);
     }
 }
 
@@ -84,7 +86,7 @@ export async function GET(req) {
         return NextResponse.json(player);
     } catch (e) {
         console.log(e)
-        return NextResponse.json({ message: "error" });
+        return NextResponse.json({ message: "error" }, { status: 500, statusText: e.message });
     }
 
 }
@@ -108,6 +110,6 @@ export async function PUT(req) {
         return NextResponse.json({ message: "OK" });
     } catch (e) {
         console.log(e);
-        return NextResponse.json({ message: "error" });
+        return NextResponse.json({ message: "error" }, { status: 500, statusText: e.message });
     }
 }

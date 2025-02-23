@@ -10,7 +10,19 @@ export async function GET(req) {
     try {
         const musics = await prisma.entryTable.findMany({
             where: {
-                BlockNo: blockNo,
+                BlockNo: {
+                    in: [
+                        blockNo,
+                        blockNo + 1,
+                        blockNo - 1,
+                        blockNo + 2700,
+                        blockNo - 2700,
+                        blockNo + 1 + 2700,
+                        blockNo + 1 - 2700,
+                        blockNo - 1 + 2700,
+                        blockNo - 1 - 2700,
+                    ],
+                },
             },
             select: {
                 Latitude: true,
