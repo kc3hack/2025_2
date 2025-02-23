@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 
 const defaultPosition = [34.81763, 135.36189];
 
-function DynamicMarker({ track }) {
+function DynamicMarker({ track, next }) {
   const map = useMap();
   const [iconSize, setIconSize] = useState([25, 35]);
 
@@ -29,7 +29,8 @@ function DynamicMarker({ track }) {
   }, [map]);
 
   const musicIcon = L.icon({
-    iconUrl: 'https://img.icons8.com/?size=100&id=qJaxRD3kNRPO&format=png&color=000000',
+    // iconUrl: 'https://img.icons8.com/?size=100&id=qJaxRD3kNRPO&format=png&color=000000',
+    iconUrl: (next ? "map-pin-solid.svg" : "music-solid.svg"),
     iconSize,
     iconAnchor: [12, 41],
   });
@@ -37,8 +38,8 @@ function DynamicMarker({ track }) {
   return (
     <Marker position={[track.Latitude, track.Longitude]} icon={musicIcon}>
       <Popup>
-      <strong>{track.music.MusicName}</strong><br />
-      <em>{track.music.ArtistName}</em>
+        <strong>{track.music.MusicName}</strong><br />
+        <em>{track.music.ArtistName}</em>
       </Popup>
     </Marker>
   );
@@ -55,7 +56,7 @@ function RecenterMap({ position, isFollowing }) {
   return null;
 }
 
-export default function CurrentLocationMap({ position, musics }) {
+export default function CurrentLocationMap({ position, musics, nextMusic }) {
   const [isFollowing, setIsFollowing] = useState(true); // 追従モードの管理
   const router = useRouter();
 
@@ -81,8 +82,9 @@ export default function CurrentLocationMap({ position, musics }) {
 
         {/* DynamicMarker コンポーネントを使用 */}
         {Array.isArray(musics) ? musics.map((track, i) => (
-          <DynamicMarker key={i} track={track} />
+          <DynamicMarker key={i} track={track} next={false} />
         )) : null}
+        {nextMusic ? <DynamicMarker track={nextMusic} next={true} /> : ""}
 
       </MapContainer>
 
