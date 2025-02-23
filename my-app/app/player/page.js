@@ -151,7 +151,7 @@ export default function Home() {
 
     return (
         <>
-            <SimpleMap position={position} musics={musics} />
+            <SimpleMap position={position} musics={musics} nextMusic={closestSpot} />
             <Player nextMusic={closestSpot} token={token} userName={userName} />
             {/* デバッグ用ボタン */}
             <button className="b-0" onClick={() => {
