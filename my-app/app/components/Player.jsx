@@ -84,7 +84,7 @@ export default function Player({ nextMusic, token, userName }) {
     }, [nowMusic]);
 
     return (
-        <div className="fixed bottom-0 left-0 w-full h-32 z-50 bg-blue-700 text-white flex items-center px-6">
+        <div className="fixed bottom-0 left-0 w-full h-32 z-50 bg-[#432db0] text-white flex items-center px-6">
             <img
                 src={nowMusic ? nowMusic.music.ImageUrl : "/image.png"} // 任意の画像に変更
                 alt="Song Thumbnail"
