@@ -84,7 +84,7 @@ export default function Home() {
                     alert("⚠️ 位置情報の取得に失敗しました。");
                 }
             }, { enableHighAccuracy: true, timeout: 1000, maximumAge: 0 }); // 現在位置を常に正確に取得し、1000ms以内に取得できないとエラーとなる
-        }, 5000); //1000ms(1s)毎に繰り返す
+        }, 1000); //1000ms(1s)毎に繰り返す
 
         return () => clearInterval(loop); //コンポーネントがアンマウントされたときにsetIntervalの中身を消去
     }, [blockNo, musics]);
@@ -92,7 +92,7 @@ export default function Home() {
 
     return (
         <>
-            <SimpleMap position={position} musics={musics} />
+            <SimpleMap position={position} musics={musics} nextMusic={closestSpot} />
             <Player nextMusic={closestSpot} token={token} userName={userName} />
             {/* デバッグ用ボタン */}
             <button className="b-0" onClick={() => {
