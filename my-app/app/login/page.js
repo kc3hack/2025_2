@@ -2,6 +2,7 @@
 import { useSession } from "next-auth/react"
 import { signIn, signOut } from "next-auth/react"
 import { useRouter } from "next/navigation"
+import Image from 'next/image'
 
 export default function Home() {
     const { data: session } = useSession();
@@ -12,23 +13,37 @@ export default function Home() {
     if (session) {
         return (
             <div className="flex flex-col items-center justify-center h-screen">
-
+                {/* ロゴ */}
+                 <Image src="/logo.png" width={500} height={500} alt="logo" className="mb-8" />
+                 {/* アプリ起動ボタン */}
                 <button
-                    className="w-56 h-16 rounded-xl bg-blue-500 text-white text-2xl font-semibold shadow-lg hover:bg-blue-600 active:scale-[0.98] transition-all"
+                    className="w-56 h-16 rounded-xl bg-[#432db0] text-white text-2xl font-semibold shadow-lg hover:bg-[#432db0] active:scale-[0.98] transition-all"
                     onClick={() => router.push('/player')}
                 >
-                    Home
+                    Launch Your App
                 </button>
-                <p className='opacity-70 mt-8 mb-5 underline cursor-pointer' onClick={() => signOut()}>Sign Out</p>
+                
+                <div className="mt-8"></div>
+                {/* サインアウト */}
+                <button
+                    className="w-56 h-10 rounded-xl bg-white text-[#432db0] text-xl font-semibold shadow-lg hover:bg-white active:scale-[0.98] transition-all"
+                    onClick={() => signOut()}
+                >
+                    Sign Out
+                </button>
 
             </div>
         );
     } else {
         return (
             <div className="flex flex-col items-center justify-center h-screen">
+                {/* ロゴ */}
+                <Image src="/logo.png" width={500} height={500} alt="logo" className="mb-8" />
+                
+                {/* サインイン */}
                 <button
                     onClick={() => signIn()}
-                    className="w-56 h-16 rounded-xl bg-blue-500 text-white text-2xl font-semibold shadow-lg hover:bg-blue-600 active:scale-[0.98] transition-all"
+                    className="w-56 h-16 rounded-xl bg-[#432db0] text-white text-2xl font-semibold shadow-lg hover:bg-[#432db0] active:scale-[0.98] transition-all"
                 >
                     Sign In
                 </button>
@@ -37,23 +52,3 @@ export default function Home() {
         )
     }
 }
-
-// "use client";
-// import { signIn, signOut, useSession } from "next-auth/react";
-
-// export default function LoginPage() {
-//   const { data: session } = useSession();
-
-//   return (
-//     <div>
-//       {session ? (
-//         <>
-//           <p>こんにちは, {session.user.name} さん</p>
-//           <button onClick={() => signOut()}>ログアウト</button>
-//         </>
-//       ) : (
-//         <button onClick={() => signIn("spotify")}>Spotifyでログイン</button>
-//       )}
-//     </div>
-//   );
-// }
