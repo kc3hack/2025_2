@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 
 const defaultPosition = [34.81763, 135.36189];
 
-function DynamicMarker({ position }) {
+function DynamicMarker({ track }) {
   const map = useMap();
   const [iconSize, setIconSize] = useState([25, 35]);
 
@@ -35,8 +35,11 @@ function DynamicMarker({ position }) {
   });
 
   return (
-    <Marker position={position} icon={musicIcon}>
-      <Popup>曲名</Popup>
+    <Marker position={[track.Latitude, track.Longitude]} icon={musicIcon}>
+      <Popup>
+      <strong>{track.music.MusicName}</strong><br />
+      <em>{track.music.ArtistName}</em>
+      </Popup>
     </Marker>
   );
 }
@@ -77,8 +80,8 @@ export default function CurrentLocationMap({ position, musics }) {
         </Marker>
 
         {/* DynamicMarker コンポーネントを使用 */}
-        {Array.isArray(musics) ? musics.map((music, i) => (
-          <DynamicMarker key={i} position={[music.Latitude, music.Longitude]} />
+        {Array.isArray(musics) ? musics.map((track, i) => (
+          <DynamicMarker key={i} track={track} />
         )) : null}
 
       </MapContainer>
