@@ -7,6 +7,21 @@ export default function Player({ nextMusic, token, userName }) {
     const [nowMusic, setNowMusic] = useState(null);
     const [isDisabled, setIsDisabled] = useState(false);
 
+    function showError(message) {
+        switch (message) {
+            case "Unauthorized":
+                alert("⚠️権限の不足：再ログインしてください");
+                break;
+            case "Device is not booting":
+                alert("⚠️デバイス取得：スマートフォンからSpotifyを起動してください");
+                break;
+            default:
+                alert("⚠️不明なエラー：再読み込みしてください");
+                break;
+        }
+        console.log(message);
+    }
+
     useEffect(() => {
         const check = setTimeout(async () => {
             if (!token || !isPlay) {
@@ -56,6 +71,7 @@ export default function Player({ nextMusic, token, userName }) {
             })
             if (!res.ok) {
                 console.log(res);
+                showError(res.statusText);
             } else {
                 setIsPlay(true);
                 setNextCheckTime((prev) => prev != 3000 ? 3000 : 3001);
@@ -70,7 +86,7 @@ export default function Player({ nextMusic, token, userName }) {
     return (
         <div className="fixed bottom-0 left-0 w-full h-32 z-50 bg-blue-700 text-white flex items-center px-6">
             <img
-                src={nowMusic ? nowMusic.music.ImageUrl : "/image-solid.svg"} // 任意の画像に変更
+                src={nowMusic ? nowMusic.music.ImageUrl : "/image.png"} // 任意の画像に変更
                 alt="Song Thumbnail"
                 className="w-16 h-16 rounded-md object-cover bg-white"
             />
@@ -99,10 +115,13 @@ export default function Player({ nextMusic, token, userName }) {
                             setIsPlay(false);
                             console.log("click");
                             setNextCheckTime((prev) => prev != 3000 ? 3000 : 3001);
+                        } else {
+                            console.log(res);
+                            showError(res.statusText);
                         }
                     } else {
                         console.log("restart")
-                        setNowMusic(nextMusic);
+                        setNowMusic({ ...nextMusic });
                     }
                 }}
             >
