@@ -79,7 +79,10 @@ export default function Home() {
                 // console.log("musics",musics); //デバッグ用
 
             }, (error) => {
-                console.error(error);
+                if (error.code == 2) {
+                    clearInterval(loop);
+                    alert("⚠️ 位置情報の取得に失敗しました。");
+                }
             }, { enableHighAccuracy: true, timeout: 1000, maximumAge: 0 }); // 現在位置を常に正確に取得し、1000ms以内に取得できないとエラーとなる
         }, 5000); //1000ms(1s)毎に繰り返す
 
