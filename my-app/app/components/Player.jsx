@@ -84,7 +84,7 @@ export default function Player({ nextMusic, token, userName }) {
     }, [nowMusic]);
 
     return (
-        <div className="fixed bottom-0 left-0 w-full h-32 z-50 bg-blue-700 text-white flex items-center px-6">
+        <div className="fixed bottom-0 left-0 w-full h-32 z-50 bg-[#432db0] text-white flex items-center px-6">
             <img
                 src={nowMusic ? nowMusic.music.ImageUrl : "/image.png"} // 任意の画像に変更
                 alt="Song Thumbnail"
@@ -95,6 +95,7 @@ export default function Player({ nextMusic, token, userName }) {
                 <div className="text-sm">{nowMusic ? nowMusic.music.ArtistName : "artist"}</div>
             </div>
             {/* <img src="/play.gif" alt="play" className="w-16 h-8 m-2" /> */}
+            {isPlay ? <img src="/play.gif" alt="play" className="w-16 h-8 m-2"></img> : <img src="/pause.png" alt="pause" className="w-16 h-8 m-2"></img>}
             <button
                 className="relative w-16 h-16 flex items-center justify-center bg-white rounded-full transition-all duration-1000 overflow-hidden"
                 onClick={async () => {
