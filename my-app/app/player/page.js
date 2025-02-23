@@ -2,7 +2,7 @@
 import { useSession } from "next-auth/react"
 import dynamic from 'next/dynamic';
 import { useMemo, useState, useEffect } from 'react';
-import Player from './Player';
+import Player from '../components/Player';
 import { kdTree } from 'kd-tree-javascript';
 
 export default function Home() {
