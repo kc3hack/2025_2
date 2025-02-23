@@ -3,10 +3,12 @@
 import { useState } from "react";
 import axios from "axios";
 import "./styles.css"; 
+import { useRouter } from "next/navigation";
 
 export default function Home() {
   const [query, setQuery] = useState("");
   const [tracks, setTracks] = useState([]);
+  const router = useRouter();
 
   const searchTracks = async () => {
     if (!query) return;
@@ -71,6 +73,10 @@ export default function Home() {
 
   return (
     <div className="container">
+      <button className="back-button" onClick={() => router.push("/player")}>
+        ←
+      </button>
+
       <h1 className="title">Search</h1>
       <div className="search-box">
         <input

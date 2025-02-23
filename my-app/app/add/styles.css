@@ -100,6 +100,16 @@
     cursor: pointer;
     transition: background 0.3s, transform 0.2s;
   }
+
+  .back-button {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    background-color: transparent;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+  }
   
   .add-button:hover {
     background-color: #432db0;

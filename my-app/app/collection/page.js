@@ -47,6 +47,9 @@ export default function Home() {
 
     return (
         <div className="container">
+            <button className="back-button" onClick={() => router.push("/player")}>
+              ←
+            </button>
             <h1 className="title">Collections</h1>
             <div className="search-box">
                 <input
