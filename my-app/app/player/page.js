@@ -6,13 +6,12 @@ import Player from '../components/Player';
 import { kdTree } from 'kd-tree-javascript';
 
 const path = [
-    [35.681236, 139.767125], // 東京駅
-    [35.689487, 139.691711], // 新宿駅
-    [35.699471, 139.771956], // 上野駅
-    [35.658034, 139.701636]  // 渋谷駅
+    [35.01299, 135.67778], // 渡月橋
+    [35.01603, 135.67711], // 天龍寺
+    [35.01664, 135.68108], // 嵯峨
 ];
 
-const stepSize = 0.001; // 移動ステップの距離（度単位）
+const stepSize = 0.0001; // 移動ステップの距離（度単位）
 
 export default function Home() {
     const { data: session } = useSession();
