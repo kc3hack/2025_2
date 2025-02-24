@@ -16,6 +16,7 @@ export default function Home() {
     const router = useRouter(); // ルーターの初期化
     const token = session?.token?.access_token; // 認証トークン（未使用）
     const userName = session?.user?.email;
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         // ユーザーのメールアドレスが取得できたらデータを取得
@@ -26,6 +27,7 @@ export default function Home() {
     // データを取得する関数
     const fetchData = async (query = "", order = sortOrder) => {
         try {
+            setLoading(true);//ローディング用
             // APIエンドポイントに検索クエリとユーザーのメールアドレスを渡す
             const res = await fetch(`/api/collectiondb?email=${encodeURIComponent(session.user.email)}&query=${encodeURIComponent(query)}&sort=${order}`);
             const json = await res.json(); // JSONレスポンスを取得
@@ -34,12 +36,19 @@ export default function Home() {
             console.error("Failed to fetch data:", error);
             alert("⚠️データの取得に失敗しました");
             setSongs([]); // エラー時は曲リストを空にする
-        }
+        } finally {
+            setLoading(false);//ローディング用
+          }
     };
 
     // 検索ボタンを押したときに検索を実行
     const handleSearch = () => {
-        fetchData(searchQuery);
+        try{
+            setLoading(true);//ローディング用
+            fetchData(searchQuery);
+        } finally {
+            setLoading(false);//ローディング用
+          }
     };
 
      // ソート順を切り替える処理
@@ -52,6 +61,7 @@ export default function Home() {
     // 曲をクリックしたときに詳細ページへ遷移する処理
     const handleMusicClick = async (musicId) => {
         try {
+            setLoading(true);//ローディング用
             // 選択した曲を MusicIDから取得する
             const response = await fetch(`/api/get_music?musicId=${encodeURIComponent(musicId)}&sort=desc`);
             const data = await response.json();
@@ -60,7 +70,9 @@ export default function Home() {
         } catch (error) {
             console.error("Error fetching entry ID:", error);
             alert("⚠️再生データの取得に失敗しました");
-        }
+        } finally {
+            setLoading(false);//ローディング用
+          }
     };
 
     return (
