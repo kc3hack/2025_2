@@ -88,20 +88,25 @@ export default function CurrentLocationMap({ position, musics }) {
 
       {/* 追従モードの切り替えボタン */}
       <button
-        onClick={() => setIsFollowing(!isFollowing)}
-        style={{
-          position: "absolute",
-          top: "20px",
-          right: "10px",
-          zIndex: 1000,
-          background: "white",
-          padding: "10px",
-          borderRadius: "5px",
-          cursor: "pointer"
-        }}
-      >
-        {isFollowing ? "追従ON" : "追従OFF"}
-      </button>
+  onClick={() => setIsFollowing(!isFollowing)}
+  style={{
+    position: "absolute",
+    top: "20px",
+    right: "10px",
+    zIndex: 1000,
+    background: isFollowing ? "#432db0" : "#9681ff", // ONは紫、OFFは薄紫
+    color: "white",
+    padding: "10px",
+    borderRadius: "5px",
+    cursor: "pointer",
+    fontWeight: "bold",
+    border: "none",
+    transition: "background 0.3s ease-in-out", // スムーズな色変化
+  }}
+>
+  {isFollowing ? "現在地" : "現在地"}
+</button>
+
 
       {/* 追加ページボタン（画面遷移） */}
       <button
