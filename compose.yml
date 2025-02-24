@@ -10,10 +10,28 @@ services:
       - ./:/workspace/
       - node_modules:/workspace/my-app/node_modules
     environment:
-      - LOCAL_WORKSPACE_FOLDER="${localWorkspaceFolder}"
       - WATCHPACK_POLLING=true
     # 以下必要に応じて変更
     tty: true
     init: true
+  mysql:
+    image: mysql
+    env_file:
+      - .env
+    volumes:
+      - sql-data:/var/lib/mysql
+    ports:
+      - 3306:3306
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    depends_on:
+      - mysql
+    environment:
+      PMA_HOST: mysql
+    env_file:
+      - .env
+    ports:
+      - 8080:80
 volumes:
+  sql-data:
   node_modules:
