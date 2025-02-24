@@ -30,7 +30,7 @@ function DynamicMarker({ track, next }) {
 
   const musicIcon = L.icon({
     // iconUrl: 'https://img.icons8.com/?size=100&id=qJaxRD3kNRPO&format=png&color=000000',
-    iconUrl: (next ? "map-pin-solid.svg" : "music-solid.svg"),
+    iconUrl: (next ? "map-pin.png" : "music-solid.svg"),
     iconSize,
     iconAnchor: [12, 41],
   });
