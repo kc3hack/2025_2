@@ -41,6 +41,10 @@
 
 ## 使用技術
 
+- **Next.js**
+- SpotifyAPI 曲の再生
+- Leaflet 地図の表示
+- prisma ORM
 <!-- 使用技術を入力してください -->
 
 
